@@ -1,0 +1,43 @@
+{
+  "_notice": "SAMPLE DATA. Brands, products, prices and ingredient lists below are fictional placeholders for development. Replace with real, human-verified retailer data (set provenance.verified=true) before any public demo.",
+  "products": [
+    {"id": "cl-001", "name": "Gentle Gel Cleanser", "brand": "Sample Lab", "category": "cleanser", "price": 14.0,
+     "ingredients": ["Water", "Glycerin", "Cocamidopropyl Betaine", "Panthenol", "Sodium Chloride"],
+     "targets": ["oiliness", "pore"], "provenance": {"source": "sample-data", "verified": false}},
+    {"id": "cl-002", "name": "Rose Cream Cleanser", "brand": "Sample Lab", "category": "cleanser", "price": 18.0,
+     "ingredients": ["Water", "Glycerin", "Rosa Damascena Flower Water", "Parfum", "Cetearyl Alcohol"],
+     "targets": ["moisture", "redness"], "provenance": {"source": "sample-data", "verified": false}},
+    {"id": "cl-003", "name": "Clarifying Foam Wash", "brand": "Sample Lab", "category": "cleanser", "price": 12.0,
+     "ingredients": null,
+     "targets": ["acne", "oiliness", "pore"], "provenance": {"source": "sample-data (ingredients missing)", "verified": false}},
+    {"id": "mo-001", "name": "Barrier Repair Moisturizer", "brand": "Sample Lab", "category": "moisturizer", "price": 24.0,
+     "ingredients": ["Water", "Glycerin", "Ceramide NP", "Squalane", "Cholesterol", "Panthenol"],
+     "targets": ["moisture", "redness", "texture"], "provenance": {"source": "sample-data", "verified": false}},
+    {"id": "mo-002", "name": "Lightweight Gel Moisturizer", "brand": "Sample Lab", "category": "moisturizer", "price": 19.0,
+     "ingredients": ["Water", "Glycerin", "Hyaluronic Acid", "Niacinamide", "Linalool"],
+     "targets": ["oiliness", "pore", "moisture"], "provenance": {"source": "sample-data", "verified": false}},
+    {"id": "mo-003", "name": "Rich Night Cream", "brand": "Sample Lab", "category": "moisturizer", "price": 38.0,
+     "ingredients": ["Water", "Shea Butter", "Squalane", "Retinyl Palmitate", "Tocopherol"],
+     "targets": ["wrinkle", "firmness", "texture"], "provenance": {"source": "sample-data", "verified": false}},
+    {"id": "sp-001", "name": "Daily Mineral SPF 50", "brand": "Sample Lab", "category": "sunscreen", "price": 22.0,
+     "ingredients": ["Zinc Oxide", "Water", "Squalane", "Tocopherol", "Glycerin"],
+     "targets": ["age_spot", "redness", "radiance"], "provenance": {"source": "sample-data", "verified": false}},
+    {"id": "sp-002", "name": "Sheer Fluid SPF 30", "brand": "Sample Lab", "category": "sunscreen", "price": 16.0,
+     "ingredients": ["Water", "Homosalate", "Octocrylene", "Alcohol Denat.", "Parfum"],
+     "targets": ["age_spot", "oiliness"], "provenance": {"source": "sample-data", "verified": false}},
+    {"id": "se-001", "name": "Niacinamide 5% Serum", "brand": "Sample Lab", "category": "serum", "price": 15.0,
+     "ingredients": ["Water", "Niacinamide", "Zinc PCA", "Glycerin"],
+     "targets": ["pore", "oiliness", "texture", "acne"], "provenance": {"source": "sample-data", "verified": false}},
+    {"id": "se-002", "name": "Vitamin C Brightening Serum", "brand": "Sample Lab", "category": "serum", "price": 29.0,
+     "ingredients": ["Water", "Ascorbic Acid", "Ferulic Acid", "Tocopherol", "Glycerin"],
+     "targets": ["radiance", "age_spot", "dark_circle_v2"], "provenance": {"source": "sample-data", "verified": false}}
+  ],
+  "garments": [
+    {"id": "gm-001", "name": "Emerald Wrap Dress", "brand": "Sample Atelier", "price": 69.0, "category": "full_body",
+     "tags": ["elegant", "wedding", "formal"], "image_url": null, "provenance": {"source": "sample-data", "verified": false}},
+    {"id": "gm-002", "name": "Navy Tailored Jumpsuit", "brand": "Sample Atelier", "price": 84.0, "category": "full_body",
+     "tags": ["elegant", "wedding", "smart"], "image_url": null, "provenance": {"source": "sample-data", "verified": false}},
+    {"id": "gm-003", "name": "Ivory Silk Blouse", "brand": "Sample Atelier", "price": 45.0, "category": "upper_body",
+     "tags": ["elegant", "office", "smart"], "image_url": null, "provenance": {"source": "sample-data", "verified": false}}
+  ]
+}

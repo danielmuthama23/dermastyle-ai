@@ -1,0 +1,432 @@
+<title>DermaStyle AI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a clinical-lab bench meets a fashion lookbook. One scan-face hero, then a five-step workbench and a source viewer. */
+:root {
+  --bg: #e9edf1; --surface: #f8fafb; --ink: #10151c; --muted: #5a6572; --line: #cdd5dd;
+  --accent: #2f4bff; --accent-ink: #ffffff; --accent-soft: #dfe4ff;
+  --good: #1f7a5c; --warn: #b4620f; --bad: #b3322a;
+  --ev-measured: #2f4bff; --ev-verified: #1f7a5c; --ev-catalog: #8a6a00; --ev-inferred: #6a4fb3; --ev-unknown: #b3322a;
+  --code-bg: #0f141b; --code-ink: #d7e0ea;
+  --f-display: "Bricolage Grotesque", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1015; --surface: #161a21; --ink: #eef2f6; --muted: #98a3b0; --line: #29313b;
+  --accent: #8197ff; --accent-ink: #0d1015; --accent-soft: #232b55;
+  --good: #5fd0a4; --warn: #f0a458; --bad: #ff8a80;
+  --ev-measured: #8fa2ff; --ev-verified: #5fd0a4; --ev-catalog: #e0c35a; --ev-inferred: #b9a6f0; --ev-unknown: #ff8a80;
+  --code-bg: #0a0d11; --code-ink: #d7e0ea; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d1015; --surface: #161a21; --ink: #eef2f6; --muted: #98a3b0; --line: #29313b;
+  --accent: #8197ff; --accent-ink: #0d1015; --accent-soft: #232b55;
+  --good: #5fd0a4; --warn: #f0a458; --bad: #ff8a80;
+  --ev-measured: #8fa2ff; --ev-verified: #5fd0a4; --ev-catalog: #e0c35a; --ev-inferred: #b9a6f0; --ev-unknown: #ff8a80;
+  --code-bg: #0a0d11; --code-ink: #d7e0ea; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--f-body); padding-block: 12px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; letter-spacing: -0.02em; line-height: 1.05; }
+h2 { font-size: 1.5rem; } h3 { font-size: 1.05rem; letter-spacing: -0.01em; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font: 500 .72rem/1 var(--f-mono); text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.brand { font: 800 1.25rem/1 var(--f-display); letter-spacing: -.03em; }
+.brand i { font-style: normal; color: var(--accent); }
+.demo-flag { font: 500 .72rem/1.3 var(--f-mono); border: 1px solid var(--warn); color: var(--warn); border-radius: 6px; padding: 5px 8px; }
+
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 24px; align-items: center; }
+.hero h1 { font-size: clamp(2.3rem, 7vw, 4.4rem); font-weight: 800; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lede { color: var(--muted); max-width: 46ch; margin-top: 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+.ev { display: inline-block; font: 500 .66rem/1.5 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; border: 1px solid currentColor; border-radius: 4px; padding: 0 5px; margin-right: 6px; }
+.ev.measured { color: var(--ev-measured); } .ev.verified { color: var(--ev-verified); } .ev.catalog { color: var(--ev-catalog); }
+.ev.inferred { color: var(--ev-inferred); } .ev.unknown { color: var(--ev-unknown); }
+.faceStage { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 10px; position: relative; }
+.faceStage svg { display: block; width: 100%; height: auto; max-height: 440px; }
+.zone { cursor: pointer; transition: opacity .2s; stroke: var(--surface); stroke-width: 1.5; }
+.zone:hover, .zone.on { opacity: 1 !important; stroke: var(--ink); }
+.scanline { animation: scan 3.2s ease-in-out infinite alternate; }
+@keyframes scan { from { transform: translateY(0); } to { transform: translateY(230px); } }
+.readout { font: 400 .8rem/1.4 var(--f-mono); color: var(--muted); padding: 8px 6px 2px; min-height: 3.2em; }
+.readout b { color: var(--ink); font-weight: 500; }
+
+nav.tabs { display: flex; gap: 4px; overflow-x: auto; border-bottom: 1px solid var(--line); scrollbar-width: thin; }
+nav.tabs button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 12px; cursor: pointer; white-space: nowrap; color: var(--muted); font-weight: 500; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.panel > header { display: flex; flex-direction: column; gap: 6px; }
+.panel > header p { color: var(--muted); max-width: 68ch; }
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.cols { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+.btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 10px; padding: 10px 16px; font-weight: 600; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn:active { transform: translateY(1px); }
+textarea, select { width: 100%; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font: inherit; }
+textarea { min-height: 84px; resize: vertical; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { font: 500 .78rem/1 var(--f-mono); border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; background: var(--bg); }
+.chip.on { background: var(--accent-soft); border-color: var(--accent); }
+.switch { display: inline-flex; gap: 8px; align-items: center; cursor: pointer; user-select: none; }
+.note { color: var(--muted); font-size: .85rem; }
+
+.score { display: grid; grid-template-columns: 112px minmax(0, 1fr) 34px; gap: 10px; align-items: center; font-size: .88rem; }
+.bar { height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 99px; }
+.presets button { cursor: pointer; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 8px 12px; }
+.presets button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+details summary { cursor: pointer; color: var(--muted); }
+.sliders { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 8px 16px; margin-top: 10px; }
+.sliders label { display: grid; gap: 2px; font-size: .82rem; }
+input[type=range] { width: 100%; accent-color: var(--accent); }
+
+.prod { border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: var(--bg); min-width: 0; }
+.prod.off { opacity: .55; }
+.prod .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.prod ul { list-style: none; margin: 0; padding: 0; font-size: .84rem; display: grid; gap: 4px; }
+.ing { font: 400 .74rem/1.5 var(--f-mono); color: var(--muted); overflow-wrap: anywhere; }
+.ing mark { background: color-mix(in srgb, var(--bad) 22%, transparent); color: var(--ink); border-radius: 3px; padding: 0 2px; }
+.cat-h { display: flex; gap: 10px; align-items: baseline; margin-top: 6px; }
+
+.closet { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr); gap: 18px; align-items: start; }
+.mannequin { background: var(--bg); border: 1px solid var(--line); border-radius: 14px; padding: 8px; }
+.mannequin svg { display: block; width: 100%; height: auto; }
+.garments { display: grid; gap: 8px; }
+.garment { text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 12px; cursor: pointer; display: flex; gap: 12px; align-items: center; }
+.garment[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.sw { width: 28px; height: 28px; border-radius: 8px; flex: none; border: 1px solid var(--line); }
+
+.budget { display: grid; gap: 8px; }
+.stack { display: flex; height: 22px; border-radius: 8px; overflow: hidden; background: var(--line); position: relative; }
+.stack span { height: 100%; transition: width .5s ease; border-right: 2px solid var(--surface); }
+.bundle { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: var(--bg); display: grid; gap: 8px; }
+.bundle.best { border-color: var(--accent); }
+.bundle li { display: flex; justify-content: space-between; gap: 10px; }
+.bundle ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.tot { font: 800 1.6rem/1 var(--f-display); }
+.over { color: var(--bad); }
+
+.src { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 14px; }
+.tree { max-height: 560px; overflow: auto; font: 400 .78rem/1.6 var(--f-mono); border: 1px solid var(--line); border-radius: 12px; padding: 8px; background: var(--bg); }
+.tree .dir { color: var(--muted); margin-top: 6px; }
+.tree button { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 2px 6px 2px 14px; border-radius: 6px; cursor: pointer; font: inherit; overflow-wrap: anywhere; }
+.tree button[aria-current="true"] { background: var(--accent-soft); }
+.codebox { min-width: 0; display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.codebar { display: flex; justify-content: space-between; gap: 8px; align-items: center; background: var(--code-bg); color: var(--code-ink); padding: 8px 12px; font: 400 .78rem/1.3 var(--f-mono); }
+.codebar button { background: transparent; border: 1px solid #3a4553; color: var(--code-ink); border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+pre.code { margin: 0; background: var(--code-bg); color: var(--code-ink); padding: 12px; max-height: 520px; overflow: auto; font: 400 .76rem/1.55 var(--f-mono); tab-size: 2; }
+.stats { display: flex; gap: 18px; flex-wrap: wrap; }
+.stats div b { display: block; font: 800 1.5rem/1 var(--f-display); }
+
+@media (max-width: 760px) {
+  .hero, .closet, .src { grid-template-columns: minmax(0, 1fr); }
+  .score { grid-template-columns: 92px minmax(0, 1fr) 30px; }
+  .tree { max-height: 220px; }
+}
+@media (prefers-reduced-motion: reduce) { .scanline { animation: none; } .stack span { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Derma<i>Style</i> AI</div>
+    <div class="demo-flag">DEMO MODE · skin scores and try-on art are simulated</div>
+  </header>
+
+  <section class="hero" aria-label="Overview">
+    <div>
+      <p class="eyebrow">YouCam Skin AI + Clothes Try-On v4</p>
+      <h1>Your skin. Your style. <em>One plan</em> you can trust.</h1>
+      <p class="lede">Describe an occasion and a budget. DermaStyle reads your skin analysis, filters products by their real ingredient lists, previews the outfit, and totals the cart. Every claim says where it came from.</p>
+      <div class="legend" aria-label="Evidence tags">
+        <span><span class="ev measured">measured</span>from YouCam Skin AI</span>
+        <span><span class="ev verified">verified</span>checked catalog data</span>
+        <span><span class="ev catalog">catalog</span>unchecked data</span>
+        <span><span class="ev inferred">inferred</span>a rule, not a fact</span>
+        <span><span class="ev unknown">unknown</span>data missing</span>
+      </div>
+    </div>
+    <div class="faceStage">
+      <svg id="face" viewBox="0 0 240 300" role="img" aria-label="Face map. Zones are colored by simulated skin scores. Select a zone to read its scores."></svg>
+      <div class="readout" id="readout" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <nav class="tabs" role="tablist" id="tabs" aria-label="Steps"></nav>
+  <section id="view" role="tabpanel"></section>
+</div>
+
+<script>
+const CATALOG = __CATALOG__;
+const SOURCE = __SOURCE__;
+
+/* ---------- ported agent logic (mirrors backend/app/agent + catalog) ---------- */
+const FRAG = ["parfum","fragrance","aroma","perfume","linalool","limonene","geraniol","citronellol","citral","eugenol","coumarin","farnesol","benzyl salicylate","benzyl benzoate","cinnamal","hydroxycitronellal","isoeugenol","essential oil","lavandula","citrus aurantium","rosa damascena","mentha","eucalyptus","cymbopogon","melaleuca","pelargonium"];
+const ALC = ["alcohol denat","sd alcohol","ethanol"];
+const hits = (ings, terms) => (ings || []).filter(i => terms.some(t => i.toLowerCase().includes(t)));
+function check(ings, terms) { if (!ings || !ings.length) return ["unknown", []]; const h = hits(ings, terms); return h.length ? ["contains", h] : ["free", []]; }
+
+const LABEL = { wrinkle:"Wrinkles", firmness:"Firmness", acne:"Blemishes", moisture:"Moisture", eye_bag:"Eye bags", dark_circle_v2:"Dark circles",
+  age_spot:"Age spots", radiance:"Radiance", redness:"Redness", oiliness:"Oiliness", pore:"Pores", texture:"Texture" };
+const KEYS = Object.keys(LABEL);
+
+function parseGoal(text) {
+  const t = text.toLowerCase(), p = { raw: text, occasion: null, budget: null, fragranceFree: false, alcoholFree: false, style: [], cats: [], simple: false, outfit: false };
+  const occ = { wedding:["wedding","bridal"], interview:["interview"], work:["office","work","business"], party:["party","birthday","night out"], holiday:["holiday","vacation","beach","trip"] };
+  for (const [k, ws] of Object.entries(occ)) if (ws.some(w => t.includes(w))) { p.occasion = k; break; }
+  const m = text.match(/(?:\$|usd\s*)\s?(\d{1,5}(?:[.,]\d{1,2})?)|(\d{1,5})\s*(?:usd|dollars|bucks)/i);
+  if (m) p.budget = parseFloat((m[1] || m[2]).replace(",", "."));
+  p.fragranceFree = /fragrance[\s-]*free|unscented|no (?:added )?(?:fragrance|perfume)|without fragrance/.test(t);
+  p.alcoholFree = /alcohol[\s-]*free|no alcohol/.test(t);
+  p.style = ["elegant","smart","formal","casual","minimal","classic","bold","relaxed"].filter(w => t.includes(w));
+  p.simple = /\bsimple\b|\bminimal\b|\bbasic\b|few steps|short routine/.test(t);
+  p.outfit = /outfit|dress|clothes|clothing|jumpsuit|blouse|shirt|look/.test(t);
+  const map = { cleanser:/cleanser|face wash|wash/, moisturizer:/moisturi[sz]er|cream|hydrat/, sunscreen:/sunscreen|spf|sun protection/, serum:/serum|treatment|brighten/ };
+  for (const [c, re] of Object.entries(map)) if (re.test(t)) p.cats.push(c);
+  if (!p.cats.length && /skincare|skin care|routine|skin/.test(t)) p.cats = p.simple ? ["cleanser","moisturizer","sunscreen"] : ["cleanser","moisturizer","sunscreen","serum"];
+  return p;
+}
+
+function weakest(scores, n) { return Object.entries(scores).sort((a, b) => a[1] - b[1]).slice(0, n); }
+function evaluate(prod, prefs, scores) {
+  const reasons = [], warnings = []; let eligible = true;
+  const tag = prod.provenance.verified ? "verified" : "catalog";
+  const [frag, fh] = check(prod.ingredients, FRAG), [alc, ah] = check(prod.ingredients, ALC);
+  if (prefs.fragranceFree) {
+    if (frag === "contains") { eligible = false; warnings.push({ t: "Excluded: ingredient list includes " + fh.join(", ") + ".", e: tag }); }
+    else if (frag === "unknown") { eligible = false; warnings.push({ t: "Excluded: no ingredient list, so fragrance-free can't be confirmed.", e: "unknown" }); }
+    else reasons.push({ t: "Published ingredient list has no fragrance terms.", e: tag });
+  }
+  if (prefs.alcoholFree) {
+    if (alc === "contains") { eligible = false; warnings.push({ t: "Excluded: contains " + ah.join(", ") + ".", e: tag }); }
+    else if (alc === "unknown") { eligible = false; warnings.push({ t: "Excluded: ingredient list unavailable.", e: "unknown" }); }
+  }
+  let score = 0;
+  if (scores) {
+    for (const [k, v] of weakest(scores, 4)) if (prod.targets.includes(k)) {
+      score += (100 - v) / 100; reasons.push({ t: "Targets " + LABEL[k].toLowerCase() + ", which scored " + v + "/100.", e: "measured" });
+    }
+    if (!score) reasons.push({ t: "Doesn't target your lowest-scoring areas; kept for routine completeness.", e: "inferred" });
+  } else reasons.push({ t: "No skin analysis yet, so this is ranked by price only.", e: "inferred" });
+  if (frag === "contains" && !prefs.fragranceFree) warnings.push({ t: "Contains fragrance-related ingredients: " + fh.join(", ") + ".", e: tag });
+  if (frag === "unknown" && !prefs.fragranceFree) warnings.push({ t: "Ingredient list unavailable. Confirm before buying.", e: "unknown" });
+  return { prod, score: Math.round(score * 1e4) / 1e4, eligible, reasons, warnings, frag, fh };
+}
+function recommend(prefs, scores) {
+  const cats = prefs.cats.length ? prefs.cats : ["cleanser","moisturizer","sunscreen","serum"], out = {};
+  for (const c of cats) out[c] = CATALOG.products.filter(p => p.category === c).map(p => evaluate(p, prefs, scores))
+    .sort((a, b) => (!a.eligible - !b.eligible) || (b.score - a.score) || (a.prod.price - b.prod.price) || a.prod.id.localeCompare(b.prod.id));
+  return out;
+}
+function product(arrs) { return arrs.reduce((acc, arr) => acc.flatMap(a => arr.map(x => a.concat([x]))), [[]]); }
+function buildBundles(ranked, garment, budget, topN = 4) {
+  const pools = Object.values(ranked).map(r => r.filter(x => x.eligible).slice(0, topN)).filter(p => p.length);
+  if (!pools.length) return [];
+  const mk = (items, g) => { const total = Math.round((items.reduce((s, r) => s + r.prod.price, 0) + (g ? g.price : 0)) * 100) / 100;
+    return { items, garment: g, total, score: items.reduce((s, r) => s + r.score, 0), ok: budget == null ? null : total <= budget, label: "" }; };
+  const all = product(pools).map(c => mk(c, garment));
+  const bestKey = b => [-b.score, b.total];
+  const cmp = (a, b) => { const x = bestKey(a), y = bestKey(b); return x[0] - y[0] || x[1] - y[1]; };
+  const fit = all.filter(b => b.ok !== false), out = [];
+  if (fit.length) {
+    const best = fit.slice().sort(cmp)[0]; best.label = budget != null ? "Best match within budget" : "Best match"; out.push(best);
+    const cheap = fit.slice().sort((a, b) => a.total - b.total || b.score - a.score)[0];
+    if (cheap !== best) { cheap.label = "Lowest total"; out.push(cheap); }
+  } else {
+    const closest = all.slice().sort((a, b) => a.total - b.total || b.score - a.score)[0];
+    closest.label = "Closest option: $" + (closest.total - budget).toFixed(2) + " over budget"; out.push(closest);
+    if (garment) { const bare = product(pools).map(c => mk(c, null)).filter(b => b.ok); if (bare.length) { const pick = bare.sort(cmp)[0]; pick.label = "Skincare only (outfit left out to fit your budget)"; out.push(pick); } }
+  }
+  const top = all.slice().sort(cmp)[0];
+  if (!out.includes(top) && budget != null && fit.length && top.total > budget) { top.label = "Best match overall ($" + (top.total - budget).toFixed(2) + " over budget)"; out.push(top); }
+  return out;
+}
+
+/* ---------- state ---------- */
+const PRESETS = {
+  "Dry and dull":     { moisture:38, radiance:46, texture:58, wrinkle:70, firmness:74, acne:86, redness:72, oiliness:84, pore:80, eye_bag:76, dark_circle_v2:60, age_spot:78 },
+  "Oily and congested": { moisture:72, radiance:62, texture:55, wrinkle:84, firmness:82, acne:48, redness:66, oiliness:35, pore:41, eye_bag:80, dark_circle_v2:74, age_spot:76 },
+  "Sensitive":        { moisture:58, radiance:64, texture:70, wrinkle:82, firmness:80, acne:70, redness:36, oiliness:70, pore:74, eye_bag:72, dark_circle_v2:66, age_spot:60 },
+  "Balanced":         { moisture:78, radiance:80, texture:79, wrinkle:81, firmness:84, acne:85, redness:80, oiliness:76, pore:78, eye_bag:82, dark_circle_v2:79, age_spot:83 },
+};
+const GOAL0 = "Skincare and an elegant outfit for a wedding, under $150, fragrance-free. Keep the routine simple.";
+const S = { tab: "discover", goal: GOAL0, prefs: parseGoal(GOAL0), preset: "Dry and dull", scores: Object.assign({}, PRESETS["Dry and dull"]), analyzed: false,
+  garment: "gm-001", file: SOURCE.files[0] ? SOURCE.files[0].path : "", zone: null };
+const GARMENT_ART = {
+  "gm-001": { color: "#1f7a5c", shape: "dress" }, "gm-002": { color: "#1d2b53", shape: "jumpsuit" }, "gm-003": { color: "#efe9dc", shape: "blouse" } };
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+const money = n => "$" + n.toFixed(2);
+const ev = k => `<span class="ev ${k}">${k}</span>`;
+const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- face map ---------- */
+const ZONES = [
+  { id: "forehead", name: "Forehead", keys: ["wrinkle","firmness"], shapes: [[120,68,50,20]] },
+  { id: "eyes", name: "Under-eye", keys: ["dark_circle_v2","eye_bag"], shapes: [[88,112,20,9],[152,112,20,9]] },
+  { id: "cheeks", name: "Cheeks", keys: ["redness","radiance","age_spot"], shapes: [[80,160,26,24],[160,160,26,24]] },
+  { id: "nose", name: "Nose", keys: ["oiliness","pore"], shapes: [[120,146,11,30]] },
+  { id: "mouth", name: "Mouth area", keys: ["moisture"], shapes: [[120,202,26,10]] },
+  { id: "chin", name: "Chin and jaw", keys: ["acne","texture"], shapes: [[120,236,32,17]] },
+];
+const zoneScore = z => Math.round(z.keys.reduce((s, k) => s + S.scores[k], 0) / z.keys.length);
+const hue = v => Math.round(6 + (v / 100) * 150);
+function drawFace() {
+  const zs = ZONES.map(z => { const v = zoneScore(z), c = `hsl(${hue(v)} 72% 52%)`;
+    return z.shapes.map(([cx, cy, rx, ry]) => `<ellipse class="zone ${S.zone === z.id ? "on" : ""}" data-zone="${z.id}" tabindex="0" role="button" aria-label="${z.name}, score ${v}" cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${c}" opacity="${S.analyzed ? .8 : .28}"/>`).join(""); }).join("");
+  $("face").innerHTML = `
+    <defs><clipPath id="fc"><ellipse cx="120" cy="150" rx="76" ry="108"/></clipPath>
+      <linearGradient id="sg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity="0"/><stop offset="1" stop-color="var(--accent)" stop-opacity=".55"/></linearGradient></defs>
+    <path d="M52 296 C60 250 90 244 120 244 C150 244 180 250 188 296" fill="none" stroke="var(--line)" stroke-width="2"/>
+    <ellipse cx="120" cy="150" rx="76" ry="108" fill="var(--bg)" stroke="var(--ink)" stroke-width="1.5"/>
+    <g stroke="var(--line)" stroke-width="1" fill="none"><path d="M44 150H196M120 42V258" stroke-dasharray="2 5"/></g>
+    ${zs}
+    <g clip-path="url(#fc)"><g class="scanline"><rect x="40" y="40" width="160" height="26" fill="url(#sg)"/><rect x="40" y="65" width="160" height="2" fill="var(--accent)"/></g></g>
+    <g stroke="var(--ink)" stroke-width="1.3" fill="none" stroke-linecap="round"><path d="M72 100q16-8 32 0M136 100q16-8 32 0"/><path d="M118 156q-8 14 2 16"/><path d="M104 204q16 8 32 0"/></g>`;
+  const z = ZONES.find(x => x.id === S.zone);
+  $("readout").innerHTML = z ? `<b>${z.name}</b> (${S.analyzed ? "simulated " : "preview "}score ${zoneScore(z)}): ` + z.keys.map(k => `${LABEL[k]} ${S.scores[k]}`).join(" · ")
+    : (S.analyzed ? "Select a zone to read its scores." : "Run the simulated analysis in Skin Insights to color the map.");
+}
+$("face").addEventListener("click", e => { const z = e.target.closest("[data-zone]"); if (z) { S.zone = z.dataset.zone; drawFace(); } });
+$("face").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { const z = e.target.closest("[data-zone]"); if (z) { e.preventDefault(); S.zone = z.dataset.zone; drawFace(); } } });
+
+/* ---------- panels ---------- */
+const TABS = [["discover","1  Discover"],["skin","2  Skin Insights"],["planner","3  Beauty Planner"],["closet","4  Virtual Closet"],["plan","5  My Plan"],["source","Source code"]];
+function drawTabs() {
+  $("tabs").innerHTML = TABS.map(([id, l]) => `<button role="tab" aria-selected="${S.tab === id}" data-tab="${id}">${l}</button>`).join("");
+}
+function panelDiscover() {
+  const p = S.prefs, chip = (on, t) => on ? `<span class="chip on">${esc(t)}</span>` : "";
+  return `<div class="panel"><header><p class="eyebrow">Step 1</p><h2>What are you shopping for?</h2><p>Plain language in, structured profile out. The parser is rule-based, so it can only extract what you actually wrote.</p></header>
+    <textarea id="goal" aria-label="Shopping goal">${esc(S.goal)}</textarea>
+    <div class="row"><button class="btn" data-act="parse">Understand my goal</button>
+      <button class="btn ghost" data-act="ex1">Try: interview, $90, alcohol-free</button><button class="btn ghost" data-act="ex2">Try: night out, $60, serum</button></div>
+    <div><p class="eyebrow">What we understood</p><div class="chips" style="margin-top:8px">
+      ${chip(p.occasion, "occasion: " + p.occasion)}${chip(p.budget != null, "budget: " + money(p.budget || 0))}${chip(p.fragranceFree, "fragrance-free")}${chip(p.alcoholFree, "alcohol-free")}
+      ${chip(p.simple, "simple routine")}${p.style.map(s => chip(true, s)).join("")}${p.cats.map(c => chip(true, c)).join("")}${chip(p.outfit, "outfit wanted")}</div></div>
+    <p class="note">Not a medical tool. Nothing here diagnoses a skin condition.</p>
+    <div class="row"><button class="btn" data-tab="skin">Next: skin insights</button></div></div>`;
+}
+function scoreBars() {
+  return Object.entries(S.scores).sort((a, b) => a[1] - b[1]).map(([k, v]) =>
+    `<div class="score"><span>${LABEL[k]}</span><div class="bar" role="img" aria-label="${LABEL[k]} ${v} of 100"><i style="width:${v}%;background:hsl(${hue(v)} 65% 50%)"></i></div><span class="mono">${v}</span></div>`).join("");
+}
+function panelSkin() {
+  return `<div class="panel"><header><p class="eyebrow">Step 2</p><h2>Skin Insights</h2>
+    <p>In the full app a selfie goes to YouCam AI Skin Analysis and these scores come back as <span class="mono">ui_score</span> values. Here you pick a simulated result so you can see what the rest of the app does with it.</p></header>
+    <div class="row presets">${Object.keys(PRESETS).map(n => `<button data-act="preset" data-name="${esc(n)}" aria-pressed="${S.preset === n}">${n}</button>`).join("")}</div>
+    <div class="row"><button class="btn" data-act="analyze">${S.analyzed ? "Run again" : "Run simulated analysis"}</button><span class="note">${ev("measured")}in the live app. Simulated here.</span></div>
+    <div style="display:grid;gap:8px">${scoreBars()}</div>
+    <details><summary>Adjust individual scores</summary><div class="sliders">${KEYS.map(k => `<label>${LABEL[k]} <span class="mono">${S.scores[k]}</span><input type="range" min="1" max="100" value="${S.scores[k]}" data-slider="${k}" aria-label="${LABEL[k]} score"></label>`).join("")}</div></details>
+    <p class="note">Cosmetic image analysis. Not a medical diagnosis. Results depend on lighting, camera quality and pose.</p>
+    <div class="row"><button class="btn" data-tab="planner">Next: beauty planner</button></div></div>`;
+}
+function ingHTML(r) { const ings = r.prod.ingredients; if (!ings) return `<span class="ing">Ingredient list not available. Confirm on the retailer page.</span>`;
+  return `<span class="ing">${ings.map(i => r.fh.includes(i) ? `<mark>${esc(i)}</mark>` : esc(i)).join(", ")}</span>`; }
+function panelPlanner() {
+  const ranked = recommend(S.prefs, S.analyzed ? S.scores : null);
+  return `<div class="panel"><header><p class="eyebrow">Step 3</p><h2>Beauty Planner</h2><p>Products are ranked against your weakest scores. Fragrance-free is a hard filter: no ingredient list means excluded, never assumed clean.</p></header>
+    <div class="row"><label class="switch"><input type="checkbox" id="ffToggle" ${S.prefs.fragranceFree ? "checked" : ""}> Fragrance-free only</label>
+      <label class="switch"><input type="checkbox" id="alcToggle" ${S.prefs.alcoholFree ? "checked" : ""}> Alcohol-free only</label>
+      <span class="note">${S.analyzed ? "Using your simulated scores." : "No analysis yet, so ranking is by price."}</span></div>
+    <div class="banner note">Catalog is sample data. Brands, prices and ingredients are fictional.</div>
+    ${Object.entries(ranked).map(([cat, list]) => `<div><div class="cat-h"><h3 style="text-transform:capitalize">${cat}</h3><span class="note mono">${list.filter(r => r.eligible).length} of ${list.length} eligible</span></div>
+      <div class="cols" style="margin-top:10px">${list.map(r => `<article class="prod ${r.eligible ? "" : "off"}"><div class="top"><strong>${esc(r.prod.name)}</strong><span class="mono">${money(r.prod.price)}</span></div>
+        <ul>${r.reasons.concat(r.warnings).map(x => `<li>${ev(x.e)}${esc(x.t)}</li>`).join("")}</ul>${ingHTML(r)}</article>`).join("")}</div></div>`).join("")}
+    <div class="row"><button class="btn" data-tab="closet">Next: virtual closet</button></div></div>`;
+}
+function mannequin(g) {
+  const art = g && GARMENT_ART[g.id], c = art ? art.color : "none", stroke = "var(--ink)";
+  const body = `<circle cx="100" cy="42" r="22" fill="var(--surface)" stroke="${stroke}" stroke-width="1.5"/><path d="M92 62v16h16V62" fill="var(--surface)" stroke="${stroke}" stroke-width="1.5"/>
+    <path d="M62 86q38-14 76 0l8 118h-92z" fill="var(--surface)" stroke="${stroke}" stroke-width="1.5"/><path d="M72 204l-6 140h26l8-110 8 110h26l-6-140" fill="var(--surface)" stroke="${stroke}" stroke-width="1.5"/>
+    <path d="M62 90l-18 110M138 90l18 110" stroke="${stroke}" stroke-width="1.5" fill="none"/>`;
+  let gar = "";
+  if (art && art.shape === "dress") gar = `<path d="M70 84q30-12 60 0l6 70 22 150h-116l22-150z" fill="${c}" stroke="${stroke}" stroke-width="1.5"/><path d="M82 150q18 10 36 0" stroke="${stroke}" stroke-opacity=".4" fill="none"/>`;
+  if (art && art.shape === "jumpsuit") gar = `<path d="M68 84q32-12 64 0l8 100-12 160h-28l-8-100-8 100h-28l-12-160z" fill="${c}" stroke="${stroke}" stroke-width="1.5"/><path d="M62 160h76" stroke="#ffffff" stroke-opacity=".5" stroke-width="3"/>`;
+  if (art && art.shape === "blouse") gar = `<path d="M62 86q38-14 76 0l10 80h-96z" fill="${c}" stroke="${stroke}" stroke-width="1.5"/><path d="M100 80v86" stroke="${stroke}" stroke-opacity=".35"/>`;
+  return `<svg viewBox="0 0 200 360" role="img" aria-label="${g ? esc(g.name) + " illustrated on a mannequin" : "Empty mannequin"}">${body}${gar}</svg>`;
+}
+function panelCloset() {
+  const g = CATALOG.garments.find(x => x.id === S.garment);
+  return `<div class="panel"><header><p class="eyebrow">Step 4</p><h2>Virtual Closet</h2>
+    <p>The live app sends your full-length photo and a garment image to YouCam Clothes Try-On v4 and shows the generated result. This demo can't process photos, so it draws a simple illustration instead.</p></header>
+    <div class="closet"><div class="mannequin">${mannequin(g)}<p class="note" style="padding:6px 4px 2px">Illustration only</p></div>
+      <div class="garments">${CATALOG.garments.map(x => `<button class="garment" data-act="garment" data-id="${x.id}" aria-pressed="${S.garment === x.id}"><span class="sw" style="background:${GARMENT_ART[x.id].color}"></span>
+        <span><strong>${esc(x.name)}</strong><br><span class="note">${esc(x.brand)} · ${money(x.price)} · <span class="mono">${x.category}</span></span></span></button>`).join("")}
+        <button class="garment" data-act="garment" data-id="" aria-pressed="${!S.garment}"><span class="sw"></span><span><strong>No outfit</strong><br><span class="note">Skincare only</span></span></button>
+        <p class="note">Real try-on results always carry this note: visual preview only. It does not guarantee fit, comfort, fabric behavior or final appearance.</p></div></div>
+    <div class="row"><button class="btn" data-tab="plan">Build my plan</button></div></div>`;
+}
+function panelPlan() {
+  const g = CATALOG.garments.find(x => x.id === S.garment) || null, budget = S.prefs.budget;
+  const ranked = recommend(S.prefs, S.analyzed ? S.scores : null), bundles = buildBundles(ranked, g, budget);
+  const pal = ["var(--accent)", "#7b5cff", "#1f9d8a", "#d9893b", "#c2467a"];
+  const bar = b => { const max = Math.max(b.total, budget || 0) * 1.02 || 1;
+    const segs = b.items.map((r, i) => [r.prod.price, pal[i % pal.length], r.prod.name]).concat(b.garment ? [[b.garment.price, "var(--ink)", b.garment.name]] : []);
+    return `<div class="stack" role="img" aria-label="Cost breakdown">${segs.map(([v, c, n]) => `<span title="${esc(n)} ${money(v)}" style="width:${v / max * 100}%;background:${c}"></span>`).join("")}${budget != null ? `<i style="position:absolute;left:${budget / max * 100}%;top:-3px;bottom:-3px;width:2px;background:var(--bad)"></i>` : ""}</div>`; };
+  return `<div class="panel"><header><p class="eyebrow">Step 5</p><h2>My Shopping Plan</h2><p>Every combination of eligible products is scored and priced, so you see the best match, the cheapest, and what going over budget buys you.</p></header>
+    <div class="budget"><label class="row"><span>Budget</span><input type="range" id="budget" min="40" max="260" step="5" value="${budget == null ? 150 : budget}" style="flex:1;min-width:140px" aria-label="Budget"><span class="mono" id="budgetOut">${budget == null ? "none" : money(budget)}</span></label>
+      <div class="note">Red marker on each bar is your budget.</div></div>
+    ${bundles.length ? bundles.map((b, i) => `<article class="bundle ${i === 0 ? "best" : ""}"><div class="row" style="justify-content:space-between"><strong>${esc(b.label)}</strong><span class="tot ${b.ok === false ? "over" : ""}">${money(b.total)}</span></div>
+      ${bar(b)}<ul>${b.items.map(r => `<li><span>${esc(r.prod.name)} <span class="note">${r.prod.category}</span></span><span class="mono">${money(r.prod.price)}</span></li>`).join("")}${b.garment ? `<li><span>${esc(b.garment.name)} <span class="note">outfit</span></span><span class="mono">${money(b.garment.price)}</span></li>` : ""}</ul></article>`).join("")
+      : `<p>No products meet your constraints. Relax one in the Beauty Planner. Products with no ingredient list are excluded from fragrance-free results.</p>`}
+    <p class="note">Sample catalog data. Skin results and outfit art are simulated in this demo.</p></div>`;
+}
+function panelSource() {
+  const files = SOURCE.files, cur = files.find(f => f.path === S.file) || files[0];
+  const groups = {}; files.forEach(f => { const d = f.path.includes("/") ? f.path.slice(0, f.path.lastIndexOf("/")) : "."; (groups[d] = groups[d] || []).push(f); });
+  const lines = files.reduce((s, f) => s + f.text.split("\n").length, 0);
+  return `<div class="panel"><header><p class="eyebrow">Full project</p><h2>Source code</h2><p>This is the complete project folder: a FastAPI backend that calls YouCam, a Next.js frontend, tests, and Docker files. Pick a file to read it.</p></header>
+    <div class="stats"><div><b>${files.length}</b><span class="note">files</span></div><div><b>${lines.toLocaleString()}</b><span class="note">lines</span></div><div><b>29</b><span class="note">backend tests</span></div></div>
+    <div class="src"><div class="tree" role="tree">${Object.entries(groups).map(([d, fs]) => `<div class="dir">${esc(d)}/</div>${fs.map(f => `<button role="treeitem" data-act="file" data-path="${esc(f.path)}" aria-current="${f.path === cur.path}">${esc(f.path.split("/").pop())}</button>`).join("")}`).join("")}</div>
+      <div class="codebox"><div class="codebar"><span>${esc(cur.path)} · ${cur.text.split("\n").length} lines</span><button data-act="copy">Copy</button></div><pre class="code" id="code"></pre></div></div></div>`;
+}
+const PANELS = { discover: panelDiscover, skin: panelSkin, planner: panelPlanner, closet: panelCloset, plan: panelPlan, source: panelSource };
+function render() {
+  drawTabs(); $("view").innerHTML = PANELS[S.tab]();
+  if (S.tab === "source") { const f = SOURCE.files.find(x => x.path === S.file) || SOURCE.files[0]; $("code").textContent = f.text; }
+  drawFace();
+}
+
+/* ---------- events ---------- */
+function animateScores() {
+  const target = Object.assign({}, S.scores); S.analyzed = true;
+  if (reduce) { render(); return; }
+  const t0 = performance.now(); const run = now => { const k = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - k, 3);
+    KEYS.forEach(key => { S.scores[key] = Math.round(target[key] * e); }); if (k < 1) { requestAnimationFrame(run); } else { Object.assign(S.scores, target); }
+    if (S.tab === "skin") { const el = document.querySelector("#view .panel > div[style]"); if (el) el.innerHTML = scoreBars(); } drawFace(); };
+  requestAnimationFrame(run); render();
+}
+document.addEventListener("click", e => {
+  const tab = e.target.closest("[data-tab]"); if (tab) { S.tab = tab.dataset.tab; render(); window.scrollTo({ top: document.getElementById("tabs").offsetTop - 8, behavior: reduce ? "auto" : "smooth" }); return; }
+  const a = e.target.closest("[data-act]"); if (!a) return; const act = a.dataset.act;
+  if (act === "parse") { S.goal = $("goal").value; S.prefs = parseGoal(S.goal); render(); }
+  else if (act === "ex1") { S.goal = "Skincare and a smart outfit for an interview, under $90, alcohol-free, simple routine"; S.prefs = parseGoal(S.goal); render(); }
+  else if (act === "ex2") { S.goal = "Night out next week, a brightening serum and moisturizer under $60"; S.prefs = parseGoal(S.goal); render(); }
+  else if (act === "preset") { S.preset = a.dataset.name; S.scores = Object.assign({}, PRESETS[S.preset]); S.analyzed = false; render(); }
+  else if (act === "analyze") { S.scores = Object.assign({}, PRESETS[S.preset], S.scores); animateScores(); }
+  else if (act === "garment") { S.garment = a.dataset.id || null; render(); }
+  else if (act === "file") { S.file = a.dataset.path; render(); }
+  else if (act === "copy") { const f = SOURCE.files.find(x => x.path === S.file); const done = () => { a.textContent = "Copied"; setTimeout(() => a.textContent = "Copy", 1400); };
+    try { navigator.clipboard.writeText(f.text).then(done, () => { const r = document.createRange(); r.selectNodeContents($("code")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); a.textContent = "Selected. Press copy."; }); } catch (_) { a.textContent = "Select and copy"; } }
+});
+document.addEventListener("input", e => {
+  const t = e.target;
+  if (t.dataset.slider) { S.scores[t.dataset.slider] = +t.value; t.closest("label").querySelector(".mono").textContent = t.value; S.analyzed = true; drawFace(); const el = document.querySelector("#view .panel > div[style]"); if (el) el.innerHTML = scoreBars(); }
+  else if (t.id === "budget") { S.prefs.budget = +t.value; $("budgetOut").textContent = money(+t.value); const keep = document.activeElement.id; $("view").innerHTML = panelPlan(); const b = $("budget"); if (b && keep === "budget") b.focus(); }
+});
+document.addEventListener("change", e => {
+  if (e.target.id === "ffToggle") { S.prefs.fragranceFree = e.target.checked; render(); }
+  if (e.target.id === "alcToggle") { S.prefs.alcoholFree = e.target.checked; render(); }
+});
+render();
+</script>
