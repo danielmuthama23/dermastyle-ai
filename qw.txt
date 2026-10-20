@@ -1,0 +1,1140 @@
+-fashion
+bag
+# Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/bag'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "gender": "female",
+    "style": "random",
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/user_1_fcbc175652.jpg",
+    "ref_file_url": "https://plugins-media.makeupar.com/strapi/assets/Bag_1_32e7073034.jpg"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    clothes
+    
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/cloth-v4'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/clothes_01_10be1e1a9b.png",
+    "ref_file_url": "https://plugins-media.makeupar.com/strapi/assets/clothes_reference_full_body_01_8190f45a28.png",
+    "garment_category": "auto",
+    "filter_multi_person": "off"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    hat
+    
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/hat'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "gender": "female",
+    "style": "random",
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/user_1_fcbc175652.jpg",
+    "ref_file_url": "https://plugins-media.makeupar.com/strapi/assets/Hat_1_e1c3c087c6.jpg"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    scarf
+    
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/scarf'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "gender": "female",
+    "style": "random",
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/user_1_fcbc175652.jpg",
+    "ref_file_url": "https://plugins-media.makeupar.com/strapi/assets/Scarf_1_5a792abcde.jpg"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    shoes
+    
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/shoes-transfer'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/clothes_01_10be1e1a9b.png",
+    "ref_file_url": "https://plugins-media.makeupar.com/strapi/assets/Shoes_1_b2f3397ee0.jpg"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    - hair and beard
+    hair-c
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/hair-color'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/hair_color_01_45a45b4331.jpg",
+    "preset": "Ash Brown/Lavender"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    beard
+    
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/beard-style'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/webp_ai_beard_01_457843f3ae.jpg",
+    "template_id": "all_anchor"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    hair-s
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.1/task/hair-transfer'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/userv2_1_01_00d1ea9d9f.jpg"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    - beauty
+    makeup
+   # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/makeup-vto'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "effects": [
+      {
+        "category": "blush",
+        "pattern": {
+          "name": "1color1"
+        },
+        "palettes": [
+          {
+            "color": "#D97B7B",
+            "texture": "matte",
+            "colorIntensity": 50
+          }
+        ]
+      },
+      {
+        "category": "bronzer",
+        "pattern": {
+          "name": "Bronzer1"
+        },
+        "palettes": [
+          {
+            "color": "#9F7C50",
+            "colorIntensity": 50
+          }
+        ]
+      },
+      {
+        "category": "concealer",
+        "palettes": [
+          {
+            "color": "#FBF5E9",
+            "colorIntensity": 50,
+            "colorUnderEyeIntensity": 50,
+            "coverageLevel": 50
+          }
+        ]
+      },
+      {
+        "category": "contour",
+        "pattern": {
+          "name": "HeartFace2"
+        },
+        "palettes": [
+          {
+            "color": "#9F7C50",
+            "colorIntensity": 50
+          }
+        ]
+      },
+      {
+        "category": "eye_liner",
+        "pattern": {
+          "name": "Arabic3"
+        },
+        "palettes": [
+          {
+            "color": "#000000",
+            "texture": "matte",
+            "colorIntensity": 50
+          }
+        ]
+      },
+      {
+        "category": "eye_shadow",
+        "pattern": {
+          "name": "1color1"
+        },
+        "palettes": [
+          {
+            "color": "#D97B7B",
+            "texture": "matte",
+            "colorIntensity": 50
+          }
+        ]
+      },
+      {
+        "category": "eyebrows",
+        "pattern": {
+          "type": "color"
+        },
+        "palettes": [
+          {
+            "color": "#000000",
+            "colorIntensity": 50,
+            "texture": "matte"
+          }
+        ]
+      },
+      {
+        "category": "eyelashes",
+        "pattern": {
+          "name": "Artistic1"
+        },
+        "palettes": [
+          {
+            "color": "#000000",
+            "colorIntensity": 50
+          }
+        ]
+      },
+      {
+        "category": "foundation",
+        "palettes": [
+          {
+            "color": "#EAC595",
+            "colorIntensity": 50,
+            "coverageIntensity": 50,
+            "glowIntensity": 0
+          }
+        ]
+      },
+      {
+        "category": "highlighter",
+        "pattern": {
+          "name": "HeartFace4"
+        },
+        "palettes": [
+          {
+            "color": "#FFF7F8",
+            "colorIntensity": 50,
+            "glowIntensity": 50,
+            "shimmerIntensity": 50,
+            "shimmerDensity": 50,
+            "shimmerSize": 50
+          }
+        ]
+      },
+      {
+        "category": "lip_color",
+        "shape": {
+          "name": "original"
+        },
+        "style": {
+          "type": "full"
+        },
+        "morphology": {
+          "fullness": 0,
+          "wrinkless": 0
+        },
+        "palettes": [
+          {
+            "color": "#B52626",
+            "texture": "matte",
+            "colorIntensity": 50
+          }
+        ]
+      },
+      {
+        "category": "lip_liner",
+        "pattern": {
+          "name": "Natural1"
+        },
+        "palettes": [
+          {
+            "thickness": 50,
+            "smoothness": 50,
+            "color": "#D97B7B",
+            "colorIntensity": 50,
+            "texture": "matte"
+          }
+        ]
+      },
+      {
+        "category": "skin_smooth",
+        "skinSmoothStrength": 50,
+        "skinSmoothColorIntensity": 50
+      }
+    ],
+    "version": "1.0",
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/general_01_f8f1fd2225.png"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    eye-c
+    
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/eye-color-vto'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "effect": {
+      "intensity": 50,
+      "enlargement": 0,
+      "skin_smooth_strength": 50,
+      "skin_smooth_color_intensity": 50
+    },
+    "version": "1.0",
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/general_01_f8f1fd2225.png",
+    "ref_file_url": "https://plugins-media.makeupar.com/strapi/assets/webp_eye_len_01_788c0418fe.png"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    look
+    
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/look-vto'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "template_id": "",
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/general_01_f8f1fd2225.png"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    nail
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/nail-vto'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "version": "1.0",
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/nail_user_photo_01_27d4260646.jpg",
+    "effect_type": "nail_polish",
+    "ref_file_ids": [],
+    "effects": [
+      {
+        "sub_type": "color",
+        "finger": "thumb",
+        "color": "#FF0000",
+        "texture": "cream",
+        "transparency": 0,
+        "reflection": 100,
+        "contrast": 50,
+        "roughness": 0
+      },
+      {
+        "sub_type": "color",
+        "finger": "index",
+        "color": "#FF0000",
+        "texture": "cream",
+        "transparency": 0,
+        "reflection": 100,
+        "contrast": 50,
+        "roughness": 0
+      },
+      {
+        "sub_type": "color",
+        "finger": "middle",
+        "color": "#FF0000",
+        "texture": "cream",
+        "transparency": 0,
+        "reflection": 100,
+        "contrast": 50,
+        "roughness": 0
+      },
+      {
+        "sub_type": "color",
+        "finger": "ring",
+        "color": "#FF0000",
+        "texture": "cream",
+        "transparency": 0,
+        "reflection": 100,
+        "contrast": 50,
+        "roughness": 0
+      },
+      {
+        "sub_type": "color",
+        "finger": "pinky",
+        "color": "#FF0000",
+        "texture": "cream",
+        "transparency": 0,
+        "reflection": 100,
+        "contrast": 50,
+        "roughness": 0
+      }
+    ]
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    -skin face body
+    skin-a
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.1/task/skin-analysis'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "dst_actions": [
+      "acne",
+      "dark_circle_v2",
+      "droopy_lower_eyelid",
+      "droopy_upper_eyelid",
+      "eye_bag",
+      "firmness",
+      "moisture",
+      "oiliness",
+      "pore",
+      "radiance",
+      "redness",
+      "age_spot",
+      "texture",
+      "wrinkle",
+      "skin_type",
+      "tear_trough"
+    ],
+    "miniserver_args": {
+      "enable_mask_overlay": False
+    },
+    "format": "json",
+    "pf_camera_kit": False,
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/skin_analysis_01_5b5defd339.png"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    teeth-w
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/teeth-whiten'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "version": "1.0",
+    "effect": {
+      "whitening_intensity": 50,
+      "skin_smooth_strength": 50,
+      "skin_smooth_color_intensity": 50
+    },
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/webp_teeth_whiten_01_511d2828cf.png"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise
+    
+    face-attr
+    # Requirements: Python >= 3.10 (for f-strings), requests >= 2.20.0
+# 1. Starts an async task
+# 2. Polls until the task status becomes success or error
+import requests
+import time
+import json
+
+BASE_URL = 'https://yce-api-01.makeupar.com/s2s/v2.0/task/face-attr-analysis'
+START_METHOD = 'POST'
+HEADERS = {
+  "Content-Type": "application/json",
+  "Authorization": "Bearer sk-4Ur74nGwhUyEALJ0auHiBG4eS4r5Sx5mo71fDlsFmaqfgl-65NjnU5BDVjhZhc4g"
+}
+
+def start_task():
+  data = {
+    "features": [
+      "gender",
+      "age",
+      "faceShape",
+      "cheekbones",
+      "horizontalThird",
+      "verticalFifth",
+      "faceAspectRatio",
+      "eyeShape",
+      "eyeSize",
+      "eyeAngle",
+      "eyeDistance",
+      "eyelid",
+      "eyeAspectRatio",
+      "eyeHeightToEyebrowDistance",
+      "eyebrowShape",
+      "eyebrowThickness",
+      "eyebrowDistance",
+      "eyebrowShortness",
+      "eyebrowArch",
+      "lipShape",
+      "upperLipToLowerLip",
+      "noseWidth",
+      "noseLength",
+      "noseAspectRatio",
+      "noseWidthToMouthWidth",
+      "noseToLipToChin"
+    ],
+    "src_file_url": "https://plugins-media.makeupar.com/strapi/assets/face_reshape_01_85c8ffc055.jpg"
+  }
+  resp = requests.request(START_METHOD, BASE_URL, headers=HEADERS, json=data)
+  if not resp.ok:
+    raise RuntimeError(f"Start request failed: {resp.status_code} {resp.reason}")
+  payload = resp.json() if resp.content else {}
+  task_id = payload.get('data', {}).get('task_id')
+  if not task_id:
+    raise RuntimeError('task_id not found in response: ' + json.dumps(payload))
+  print('[startTask] Task started, id =', task_id)
+  return task_id
+
+def poll_task(task_id, interval_s=2, max_attempts=300):
+  for attempt in range(1, max_attempts + 1):
+    poll_url = f"{BASE_URL}/{task_id}"
+    resp = requests.get(poll_url, headers=HEADERS)
+    if not resp.ok:
+      raise RuntimeError(f"Polling failed: {resp.status_code} {resp.reason}")
+    payload = resp.json() if resp.content else {}
+    status = payload.get('data', {}).get('task_status')
+    print('[pollTask] Attempt', attempt, 'status =', status)
+    if status == 'success':
+      print('[pollTask] Success results:', payload.get('data', {}).get('results'))
+      return payload
+    if status == 'error':
+      raise RuntimeError('Task failed: ' + json.dumps(payload))
+    time.sleep(interval_s)
+  raise RuntimeError('Max attempts exceeded while polling')
+
+if __name__ == '__main__':
+  try:
+    task_id = start_task()
+    final = poll_task(task_id)
+    print('[main] Final response:', json.dumps(final, indent=2))
+  except Exception as e:
+    print('[main] Flow error:', e)
+    raise

@@ -95,6 +95,8 @@ async def edit_prefs(prefs: Preferences, s: Session = Depends(get_session)):
 async def start_skin_analysis(
     image: UploadFile = File(...),
     consent: bool = Form(False),
+    analysis_mode: str = Form("upload"),
+    capture_source: str = Form("file"),
     s: Session = Depends(get_session),
     settings: Settings = Depends(get_settings),
     client: YouCamClient = Depends(get_youcam),
@@ -105,11 +107,16 @@ async def start_skin_analysis(
     v, clean = await _read_image(image, ImageKind.face, settings)
     s.consent_face = True
     s.go(Stage.skin_running)
-    s.log("skin_started")
+    s.log("skin_started", analysis_mode=analysis_mode, capture_source=capture_source)
 
     async def run():
         try:
-            report = await analyze_skin(client, clean, v.content_type)
+            report = await analyze_skin(
+                client,
+                clean,
+                v.content_type,
+                extra_params={"analysis_mode": analysis_mode, "capture_source": capture_source},
+            )
         except Exception:
             s.stage = Stage.intake if s.skin is None else Stage.skin_done
             s.log("skin_failed")
@@ -129,6 +136,19 @@ async def read_job(job_id: str, jobs: JobRunner = Depends(get_jobs)) -> Job:
     if job is None:
         raise HTTPException(404, "Job not found.")
     return job
+
+
+@router.get("/catalog/products")
+async def list_products(catalog: Catalog = Depends(get_catalog)):
+    return {"products": catalog.products, "sample": catalog.is_sample}
+
+
+@router.get("/catalog/products/{product_id}")
+async def get_product(product_id: str, catalog: Catalog = Depends(get_catalog)):
+    product = catalog.product(product_id)
+    if product is None:
+        raise HTTPException(404, "Unknown product.")
+    return product
 
 
 @router.get("/catalog/garments")

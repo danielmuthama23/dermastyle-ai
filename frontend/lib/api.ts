@@ -2,7 +2,7 @@ export type Evidence = "measured" | "verified" | "catalog" | "inferred" | "unkno
 export interface Reason { text: string; evidence: Evidence }
 export interface Product {
   id: string; name: string; brand: string; category: string; price: number; currency: string;
-  ingredients: string[] | null; provenance: { source: string; verified: boolean };
+  ingredients: string[] | null; targets: string[]; retailer_url?: string | null; provenance: { source: string; verified: boolean };
 }
 export interface Recommendation {
   product: Product; score: number; eligible: boolean; reasons: Reason[]; warnings: Reason[];
@@ -43,8 +43,13 @@ export const api = {
   editPrefs: (id: string, prefs: Prefs) =>
     fetch(`/api/sessions/${id}/prefs`, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(prefs) })
       .then(r => parse<{ prefs: Prefs }>(r)),
-  startSkin: (id: string, image: File) => {
+  startSkin: (id: string, image: File, extras: Record<string, string> = {}) => {
     const f = new FormData(); f.append("image", image); f.append("consent", "true");
+    Object.entries(extras).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== "") {
+        f.append(k, v);
+      }
+    });
     return fetch(`/api/sessions/${id}/skin`, { method: "POST", body: f }).then(r => parse<{ job_id: string }>(r));
   },
   startTryOn: (id: string, person: File, o: { garmentId?: string; garmentUrl?: string; garmentImage?: File | null }) => {
@@ -57,6 +62,8 @@ export const api = {
   job: <T,>(jobId: string) => fetch(`/api/jobs/${jobId}`).then(r => parse<Job<T>>(r)),
   recommendations: (id: string) =>
     fetch(`/api/sessions/${id}/recommendations`).then(r => parse<{ ranked: Record<string, Recommendation[]>; has_analysis: boolean; catalog_is_sample: boolean }>(r)),
+  products: () => fetch("/api/catalog/products").then(r => parse<{ products: Product[]; sample: boolean }>(r)),
+  product: (id: string) => fetch(`/api/catalog/products/${id}`).then(r => parse<Product>(r)),
   garments: () => fetch("/api/catalog/garments").then(r => parse<{ garments: Garment[]; sample: boolean }>(r)),
   plan: (id: string, garmentId?: string) =>
     fetch(`/api/sessions/${id}/plan${garmentId ? `?garment_id=${garmentId}` : ""}`).then(r => parse<Plan>(r)),

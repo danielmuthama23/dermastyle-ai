@@ -1,10 +1,12 @@
 import asyncio
+from pathlib import Path
 
 import httpx
 import pytest
 import respx
 from httpx import ASGITransport, AsyncClient
 
+from app.config import get_settings
 from app.deps import get_jobs, get_store, get_youcam
 from app.main import create_app
 from app.agent.workflow import SessionStore
@@ -121,6 +123,29 @@ async def test_unknown_session_404(api):
     assert (await api.get("/api/sessions/nope")).status_code == 404
 
 
+def test_settings_loads_project_root_dotenv(monkeypatch):
+    project_root = Path(__file__).resolve().parents[2]
+    monkeypatch.chdir(project_root / "backend")
+    monkeypatch.delenv("YOUCAM_API_KEY", raising=False)
+    get_settings.cache_clear()
+    assert get_settings().youcam_api_key
+
+
 async def test_health_flags_sample_catalog(api):
     h = (await api.get("/api/health")).json()
     assert h["catalog_is_sample"] is True
+
+
+async def test_catalog_products_endpoint(api):
+    products = (await api.get("/api/catalog/products")).json()
+    assert products["sample"] is True
+    assert products["products"]
+    first = products["products"][0]
+    assert first["id"]
+
+    detail = (await api.get(f"/api/catalog/products/{first['id']}"))
+    assert detail.status_code == 200
+    assert detail.json()["id"] == first["id"]
+
+    missing = await api.get("/api/catalog/products/does-not-exist")
+    assert missing.status_code == 404

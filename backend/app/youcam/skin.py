@@ -105,10 +105,13 @@ async def analyze_skin(
     content_type: str,
     file_name: str = "selfie.jpg",
     concerns: tuple[str, ...] = SD_CONCERNS,
+    extra_params: dict[str, Any] | None = None,
 ) -> SkinReport:
     file_id = await client.upload_image(image, file_name, content_type)
-    data = await client.run_task(
-        "skin-analysis",
-        {"src_file_id": file_id, "dst_actions": list(concerns), "format": "json"},
-    )
+    payload: dict[str, Any] = {"src_file_id": file_id, "dst_actions": list(concerns), "format": "json"}
+    if extra_params:
+        for key, value in extra_params.items():
+            if key not in {"src_file_id", "dst_actions", "format"} and value is not None:
+                payload[key] = value
+    data = await client.run_task("skin-analysis", payload)
     return parse_skin_results(data)
