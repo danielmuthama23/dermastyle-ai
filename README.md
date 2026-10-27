@@ -1,5 +1,7 @@
 # DermaStyle AI
 
+![Touchline IQ — Every Moment Has a Story](./qw.png)
+
 DermaStyle AI is a skin-first shopping assistant that combines a structured shopping goal, AI skin analysis, recommendation logic, and a virtual try-on preview. It is built as a FastAPI backend and a Next.js frontend, with the backend owning the YouCam API key and the frontend calling backend endpoints through the same-origin `/api/*` proxy route.
 
 ## What the app actually does
